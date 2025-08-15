@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Escala HAD - Avaliação de Ansiedade e Depressão</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    td, th { padding: 8px; border: 1px solid #ccc; }
+    th { background-color: #f0f0f0; text-align: left; }
+    .section { margin-top: 30px; }
+    .submit-btn { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Escala HAD</h1>
+  <form id="hadForm">
+    <div id="questions"></div>
+    <button type="submit" class="submit-btn">Calcular Escore</button>
+  </form>
+
+  <script>
+    const perguntas = [
+      {texto: "1. Eu me sinto tensa(o) ou contraída(o):", valores: [["a maior parte do tempo", 3], ["boa parte do tempo", 2], ["de vez em quando", 1], ["nunca", 0]]},
+      {texto: "2. Eu ainda sinto que gosto das mesmas coisas de antes:", valores: [["sim, do mesmo jeito que antes", 0], ["não tanto quanto antes", 1], ["só um pouco", 2], ["já não consigo ter prazer em nada", 3]]},
+      {texto: "3. Eu sinto uma espécie de medo, como se algo ruim fosse acontecer:", valores: [["sim, de jeito muito forte", 3], ["sim, mas não tão forte", 2], ["um pouco, mas isso não me preocupa", 1], ["não sinto nada disso", 0]]},
+      {texto: "4. Dou risada e me divirto quando vejo coisas engraçadas:", valores: [["do mesmo jeito que antes", 0], ["atualmente um pouco menos", 1], ["atualmente bem menos", 2], ["não consigo mais", 3]]},
+      {texto: "5. Estou com a cabeça cheia de preocupações:", valores: [["a maior parte do tempo", 3], ["boa parte do tempo", 2], ["de vez em quando", 1], ["raramente", 0]]},
+      {texto: "6. Eu me sinto alegre:", valores: [["a maior parte do tempo", 0], ["muitas vezes", 1], ["poucas vezes", 2], ["nunca", 3]]},
+      {texto: "7. Consigo ficar sentado à vontade e me sentir relaxado:", valores: [["sim, quase sempre", 0], ["muitas vezes", 1], ["poucas vezes", 2], ["nunca", 3]]},
+      {texto: "8. Eu estou lenta(o) para pensar e fazer coisas:", valores: [["nunca", 0], ["poucas vezes", 1], ["muitas vezes", 2], ["quase sempre", 3]]},
+      {texto: "9. Tenho uma sensação ruim de medo (frio na barriga, aperto):", valores: [["nunca", 0], ["de vez em quando", 1], ["muitas vezes", 2], ["quase sempre", 3]]},
+      {texto: "10. Perdi o interesse em cuidar da aparência:", valores: [["me cuido do mesmo jeito que antes", 0], ["talvez não tanto quanto antes", 1], ["não estou me cuidando como deveria", 2], ["completamente", 3]]},
+      {texto: "11. Me sinto inquieto(a), como se não pudesse parar:", valores: [["não me sinto assim", 0], ["um pouco", 1], ["bastante", 2], ["sim, demais", 3]]},
+      {texto: "12. Fico animado(a) esperando coisas boas:", valores: [["do mesmo jeito que antes", 0], ["um pouco menos", 1], ["bem menos", 2], ["quase nunca", 3]]},
+      {texto: "13. Tenho sensação de entrar em pânico:", valores: [["não senti isso", 0], ["de vez em quando", 1], ["várias vezes", 2], ["a quase todo momento", 3]]},
+      {texto: "14. Sinto prazer vendo TV, lendo ou ouvindo rádio:", valores: [["quase sempre", 0], ["várias vezes", 1], ["poucas vezes", 2], ["quase nunca", 3]]}
+    ];
+
+    const ansiedadeIndex = [0,2,4,6,8,10,12];
+    const depressaoIndex = [1,3,5,7,9,11,13];
+
+    const container = document.getElementById('questions');
+    perguntas.forEach((p, i) => {
+      let table = `<table><tr><th colspan="2">${p.texto}</th></tr>`;
+      p.valores.forEach(([texto, score]) => {
+        table += `<tr><td><input type="radio" name="q${i+1}" value="${score}" required></td><td>${texto}</td></tr>`;
+      });
+      table += `</table>`;
+      container.innerHTML += table;
+    });
+
+    document.getElementById('hadForm').onsubmit = function(e) {
+      e.preventDefault();
+      let form = new FormData(e.target);
+      let ansiedade = 0, depressao = 0;
+      perguntas.forEach((_, i) => {
+        let val = parseInt(form.get("q" + (i+1)));
+        if (ansiedadeIndex.includes(i)) ansiedade += val;
+        if (depressaoIndex.includes(i)) depressao += val;
+      });
+      const interp = (score) => score <= 7 ? "Improvável" : score <= 11 ? "Possível" : "Provável";
+      alert(`Resultado:\n\nAnsiedade: ${ansiedade} pontos – ${interp(ansiedade)}\nDepressão: ${depressao} pontos – ${interp(depressao)}`);
+    }
+  </script>
+</body>
+</html>
